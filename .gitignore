@@ -1,0 +1,7 @@
+/.settings/
+/.buildpath
+/.project
+/test*.log
+/test*.csv
+/test*.txt
+/test*.xml
