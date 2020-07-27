@@ -10,11 +10,10 @@ use Psr\Log\InvalidArgumentException;
  * 
  * Class implements the PSR-3 LoggerInferface through AbstractLogger.
  *
- * history:
- * date         version
- * 2020-07-15   initial version
+ * #### History
+ * - *2020-07-15*   initial version
  *
- * @package XLogger
+ * @package SKien\XLogger
  * @version 1.0.0
  * @author Stefanius <s.kien@online.de>
  * @copyright MIT License - see the LICENSE file for details
@@ -64,6 +63,13 @@ abstract class XLogger extends AbstractLogger
     }
 
     /**
+     * Set Options for logging.
+     * Use any combination of:
+     * - XLogger::LOG_IP :      include IP-adress in log item
+     * - XLogger::LOG_BT :      include backtrace 'filename (line)' in log item
+     * - XLogger::LOG_USER :    include user in log item
+     * - XLogger::LOG_UA :      include user-agent in log item
+     * 
      * @param int $iOptions
      */
     public function setOptions(int $iOptions)
@@ -81,7 +87,10 @@ abstract class XLogger extends AbstractLogger
     }
 
     /**
-     * @param string $strPath
+     * Set the path and filename for the logfile.
+     * Some placeholders can be replaced.
+     * Supported placeholders: {@see XLogger::replacePathPlaceholder()}
+     * @param string $strFullpath
      */
     public function setFullpath(string $strFullpath)
     {
@@ -94,6 +103,9 @@ abstract class XLogger extends AbstractLogger
     }
     
     /**
+     * Set the path for the logfile.
+     * Some placeholders can be replaced.
+     * Supported placeholders: {@see \SKien\XLogger\XLogger::replacePathPlaceholder()}
      * @param string $strPath
      */
     public function setPath(string $strPath)
@@ -103,17 +115,21 @@ abstract class XLogger extends AbstractLogger
     }
     
     /**
+     * Set the filename for the logfile.
+     * Some placeholders can be replaced.
+     * Supported placeholders: {@see \SKien\XLogger\XLogger::replacePathPlaceholder()}
+     * 
      * @param string $strFilename
+     * @see \SKien\XLogger\XLogger::replacePathPlaceholder()
      */
     public function setFilename(string $strFilename)
     {
         $this->closeLogfile();
-        $strFilename = str_replace('{date}', date('Y-m-d'), $strFilename);
-        $this->strFilename = $strFilename;
+        $this->strFilename = $this->replacePathPlaceholder($strFilename);
     }
     
     /**
-     * Get current filename (may be supplemented with the date)
+     * Get current filename (may be some placeholders are supplemented).
      * @return string
      */
     public function getFilename() : string
@@ -190,6 +206,26 @@ abstract class XLogger extends AbstractLogger
             throw new InvalidArgumentException("Unknown logging level ($level)");
         }
         return $aLevel[$level];
+    }
+    
+    /**
+     * Replaces placeholders in path/filename/fullpath.
+     * Following placeholders are supported:
+     * - {date} : will be replaced by current date (Format 'YYYY-MM-DD')
+     * - {month} : will be replaced by current month (Format 'YYYY-MM')  
+     * - {year} : will be replaced by current year (Format 'YYYY')
+     * - {week} : will be replaced by current ISO-8601 week (Format 'YYYY_WW')
+     * 
+     * @param string $strPath
+     * @return string
+     */
+    protected function replacePathPlaceholder(string $strPath) : string
+    {
+        $strPath = str_replace('{date}', date('Y-m-d'), $strPath);
+        $strPath = str_replace('{month}', date('Y-m'), $strPath);
+        $strPath = str_replace('{year}', date('Y'), $strPath);
+        $strPath = str_replace('{week}', date('Y_W'), $strPath);
+        return $strPath;
     }
 
     /**

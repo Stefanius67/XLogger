@@ -9,12 +9,23 @@ use Psr\Log\LogLevel;
  * PSR-3 compliant logger for Output to XML file.
  *
  * This class creates XML file that can be transformed with given xsl into HTML
+ * #### Structure of the XML-File
+ * ```xml
+ *      <log>
+ *          <item>
+ *              <timestamp>2020-07-21 18:22:58</timestamp>
+ *              <user>SKien</user>
+ *              <caller>/packages/XLogger/XLogTest.php (62)</caller>
+ *              <level>ERROR</level>
+ *              <message>bad conditions :-(</message>
+ *          </item>
+ *      </log>
+ * ```
  *
- * history:
- * date         version
- * 2020-07-15   initial version
+ * #### History
+ * - *2020-07-15*   initial version
  *
- * @package XLogger
+ * @package SKien\XLogger
  * @version 1.0.0
  * @author Stefanius <s.kien@online.de>
  * @copyright MIT License - see the LICENSE file for details

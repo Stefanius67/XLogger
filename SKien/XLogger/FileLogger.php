@@ -12,18 +12,17 @@ use Psr\Log\LogLevel;
  * separated by defined character.
  * 
  * Dependent on the file extension following field separator is used:
- * .log :   TAB
- * .csv :   semicolon (;)
- * .txt :   colon (,)
+ * - `.log` :   TAB
+ * - `.csv` :   semicolon (;)
+ * - `.txt` :   colon (,)
  * 
  * CR/LF in message are replaced with Space to keep one item in a single line.
  * Field separator is replaced to keep the number of fields consistent.
  *
- * history:
- * date         version
- * 2020-07-15   initial version
+ * #### History
+ * - *2020-07-15*   initial version
  *
- * @package XLogger
+ * @package SKien\XLogger
  * @version 1.0.0
  * @author Stefanius <s.kien@online.de>
  * @copyright MIT License - see the LICENSE file for details

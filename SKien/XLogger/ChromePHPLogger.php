@@ -10,14 +10,12 @@ use Psr\Log\LogLevel;
  * PSR-3 compliant logger for Output to the console of the Chrome browser.
  *
  * This class does not use all of Chrome Logger capabilities, but can be used 
- * very flexibly due to the PSR-3 compatibility - also for logging existing 
- * components into the browser console.
+ * very flexibly due to the PSR-3 compatibility components into the browser console.
  *
- * history:
- * date         version
- * 2020-07-15   initial version
- *
- * @package XLogger
+ * #### History
+ * - *2020-07-15*   initial version
+ *   
+ * @package SKien\XLogger
  * @version 1.0.0
  * @author Stefanius <s.kien@online.de>
  * @copyright MIT License - see the LICENSE file for details

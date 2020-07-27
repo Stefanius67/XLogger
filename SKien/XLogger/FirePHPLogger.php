@@ -13,11 +13,10 @@ use Psr\Log\LogLevel;
  * very flexibly due to the PSR-3 compatibility - also for logging existing 
  * components into the browser console.
  *
- * history:
- * date         version
- * 2020-07-15   initial version
+ * #### History
+ * - *2020-07-15*   initial version
  *
- * @package XLogger
+ * @package SKien\XLogger
  * @version 1.0.0
  * @author Stefanius <s.kien@online.de>
  * @copyright MIT License - see the LICENSE file for details
