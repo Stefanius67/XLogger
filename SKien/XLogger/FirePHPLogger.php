@@ -34,7 +34,8 @@ class FirePHPLogger extends XLogger
      */
     public function __construct(string $level = LogLevel::DEBUG)
     {
-        $this->setLogLevel($level);
+        parent::__construct($level);
+
         $this->fb = FirePHP::getInstance(true);
         
         $this->fb->ignoreClassInTraces(get_class());
@@ -47,6 +48,7 @@ class FirePHPLogger extends XLogger
      * @param string    $level
      * @param mixed     $message
      * @param mixed[]   $context
+     * @return void
      * @throws \Psr\Log\InvalidArgumentException
      */
     public function log($level, $message, array $context = array())

@@ -37,14 +37,12 @@ class FileLogger extends XLogger
     protected string $strReplace = '';
     
     /**
-     * init filename, logging level and username (if set)
+     * init filename, logging level and remote username (if set)
+     * @param string $level
      */
-    public function __construct(string $strFullpath, string $level = LogLevel::DEBUG)
+    public function __construct(string $level = LogLevel::DEBUG)
     {
-        $this->setLogLevel($level);
-        $this->setFullpath($strFullpath);
-        // init with remote user, if available
-        $this->strUser = isset($_SERVER["REMOTE_USER"]) ? $_SERVER["REMOTE_USER"] : '';
+        parent::__construct($level);
     }
     
     /**
@@ -61,6 +59,7 @@ class FileLogger extends XLogger
      * @param string    $level
      * @param mixed     $message
      * @param mixed[]   $context
+     * @return void
      * @throws \Psr\Log\InvalidArgumentException
      */
     public function log($level, $message, array $context = array())
@@ -110,14 +109,13 @@ class FileLogger extends XLogger
     
     /**
      * Open the logfile if not done so far.
-     * Dependend on the file extensiopn the speparotor is set.
-     * @return resource
+     * Dependend on the file extension the speparator is set.
+     * @return void
      */
-    protected function openLogfile() 
+    protected function openLogfile() : void
     {
         if (!$this->logfile) {
-            $strFullPath = rtrim($this->strPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->strFilename;
-            $strFullPath = str_replace('{date}', date('Y-m-d'), $strFullPath);
+            $strFullPath = $this->getFullpath();
             switch (strtolower(pathinfo($strFullPath, PATHINFO_EXTENSION))) {
                 case 'csv':
                 case 'txt':
@@ -136,8 +134,9 @@ class FileLogger extends XLogger
     
     /**
      * close file if already opened.
+     * @return void
      */
-    protected function closeLogfile()
+    protected function closeLogfile() : void
     {
         if ($this->logfile) {
             fclose($this->logfile);
@@ -150,7 +149,7 @@ class FileLogger extends XLogger
      * @param string $strMessage
      * @return string
      */
-    protected function prepareText(string $strMessage) 
+    protected function prepareText(string $strMessage) : string
     {
         // it make sense to replace LF because each line representing one log item!
         // ... and also the separator should not be included in the message itself

@@ -29,7 +29,7 @@ class ChromePHPLogger extends XLogger
      */
     public function __construct(string $level = LogLevel::DEBUG)
     {
-        $this->setLogLevel($level);
+        parent::__construct($level);
         ChromePhp::getInstance()->addSetting(ChromePhp::BACKTRACE_LEVEL, 3);
     }
     
@@ -38,6 +38,7 @@ class ChromePHPLogger extends XLogger
      * @param mixed   $level
      * @param string  $message
      * @param mixed[] $context
+     * @return void
      * @throws \Psr\Log\InvalidArgumentException
      */
     public function log($level, $message, array $context = array())

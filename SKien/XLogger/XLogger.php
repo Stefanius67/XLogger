@@ -41,13 +41,25 @@ abstract class XLogger extends AbstractLogger
     protected string $strFilename = '';
     
     /**
+     * init filename, logging level and remote username (if set)
+     * @param string $level
+     */
+    public function __construct(string $level = LogLevel::DEBUG)
+    {
+        $this->setLogLevel($level);
+        // init with remote user, if available
+        $this->strUser = isset($_SERVER["REMOTE_USER"]) ? $_SERVER["REMOTE_USER"] : '';
+    }
+    
+    /**
      * Set the level from witch items should be logged.
      * All entries with a lower level than the specified are ignored.
      * The relevance of the defined PSR-3 level from hight to low are:
      * EMERGENCY, ALERT, CRITICAL, ERROR, WARNING, NOTICE, INFO, DEBUG
      * @param string $strLogLevel
+     * @return void
      */
-    public function setLogLevel(string $level)
+    public function setLogLevel(string $level) : void
     {
         $this->iLogLevel = $this->getIntLevel($level);
     }
@@ -71,8 +83,9 @@ abstract class XLogger extends AbstractLogger
      * - XLogger::LOG_UA :      include user-agent in log item
      * 
      * @param int $iOptions
+     * @return void
      */
-    public function setOptions(int $iOptions)
+    public function setOptions(int $iOptions) : void
     {
         $this->iOptions = $iOptions;
     }
@@ -80,23 +93,25 @@ abstract class XLogger extends AbstractLogger
     /**
      * Set the username.
      * @param string $strUser
+     * @return void
      */
-    public function setUser(string $strUser)
+    public function setUser(string $strUser) : void
     {
         $this->strUser = $strUser;
     }
 
     /**
      * Set the path and filename for the logfile.
-     * Some placeholders can be replaced.
-     * Supported placeholders: {@see XLogger::replacePathPlaceholder()}
+     * Some placeholders can be used for date/month/year/week.
      * @param string $strFullpath
+     * @return void
+     * @see XLogger::replacePathPlaceholder()
      */
-    public function setFullpath(string $strFullpath)
+    public function setFullpath(string $strFullpath) : void
     {
         $this->closeLogfile();
         if (strlen($strFullpath) > 0) {
-            $strFullpath = str_replace('{date}', date('Y-m-d'), $strFullpath);
+            $strFullpath = $this->replacePathPlaceholder($strFullpath);
             $this->strPath = pathinfo($strFullpath, PATHINFO_DIRNAME);
             $this->strFilename = pathinfo($strFullpath, PATHINFO_BASENAME);
         }
@@ -104,25 +119,25 @@ abstract class XLogger extends AbstractLogger
     
     /**
      * Set the path for the logfile.
-     * Some placeholders can be replaced.
-     * Supported placeholders: {@see \SKien\XLogger\XLogger::replacePathPlaceholder()}
+     * Some placeholders can be used for date/month/year/week.
      * @param string $strPath
+     * @return void
+     * @see XLogger::replacePathPlaceholder()
      */
-    public function setPath(string $strPath)
+    public function setPath(string $strPath) : void
     {
         $this->closeLogfile();
-        $this->strPath = $strPath;
+        $this->strPath = $this->replacePathPlaceholder($strPath);
     }
     
     /**
      * Set the filename for the logfile.
-     * Some placeholders can be replaced.
-     * Supported placeholders: {@see \SKien\XLogger\XLogger::replacePathPlaceholder()}
-     * 
+     * Some placeholders can be used for date/month/year/week.
      * @param string $strFilename
-     * @see \SKien\XLogger\XLogger::replacePathPlaceholder()
+     * @return void
+     * @see XLogger::replacePathPlaceholder()
      */
-    public function setFilename(string $strFilename)
+    public function setFilename(string $strFilename) : void
     {
         $this->closeLogfile();
         $this->strFilename = $this->replacePathPlaceholder($strFilename);
@@ -135,6 +150,16 @@ abstract class XLogger extends AbstractLogger
     public function getFilename() : string
     {
         return $this->strFilename;
+    }
+    
+    /**
+     * Get full path of the logfile.
+     * @return string
+     */
+    public function getFullpath() : string
+    {
+        $strFullPath = rtrim($this->strPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->strFilename;
+        return $strFullPath;
     }
     
     /**
@@ -210,11 +235,11 @@ abstract class XLogger extends AbstractLogger
     
     /**
      * Replaces placeholders in path/filename/fullpath.
-     * Following placeholders are supported:
-     * - {date} : will be replaced by current date (Format 'YYYY-MM-DD')
-     * - {month} : will be replaced by current month (Format 'YYYY-MM')  
-     * - {year} : will be replaced by current year (Format 'YYYY')
-     * - {week} : will be replaced by current ISO-8601 week (Format 'YYYY_WW')
+     * Following placeholders are supported:  <br/>
+     * - {date} : will be replaced by current date (Format 'YYYY-MM-DD') <br/>  
+     * - {month} : will be replaced by current month (Format 'YYYY-MM') <br/>
+     * - {year} : will be replaced by current year (Format 'YYYY') <br/>
+     * - {week} : will be replaced by current ISO-8601 week (Format 'YYYY_WW') <br/>  
      * 
      * @param string $strPath
      * @return string
@@ -232,8 +257,9 @@ abstract class XLogger extends AbstractLogger
      * Has nothing to do in the abstract class... 
      * ...but does not necessarily have to be implemented in extended classes
      * and is therefore not declared as an abstract at this point. 
+     * @return void
      */
-    protected function openLogfile()
+    protected function openLogfile() : void
     {
     }
     
@@ -241,8 +267,9 @@ abstract class XLogger extends AbstractLogger
      * Has nothing to do in the abstract class... 
      * ...but does not necessarily have to be implemented in extended classes
      * and is therefore not declared as an abstract at this point. 
+     * @return void
      */
-    protected function createLogfile()
+    protected function createLogfile() : void
     {
     }
     
@@ -250,8 +277,9 @@ abstract class XLogger extends AbstractLogger
      * Has nothing to do in the abstract class... 
      * ...but does not necessarily have to be implemented in extended classes
      * and is therefore not declared as an abstract at this point. 
+     * @return void
      */
-    protected function closeLogfile()
+    protected function closeLogfile() : void
     {
     }
 }

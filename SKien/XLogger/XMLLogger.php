@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace SKien\XLogger;
 
@@ -18,6 +18,9 @@ use Psr\Log\LogLevel;
  *              <caller>/packages/XLogger/XLogTest.php (62)</caller>
  *              <level>ERROR</level>
  *              <message>bad conditions :-(</message>
+ *          </item>
+ *          <item>
+ *              ...
  *          </item>
  *      </log>
  * ```
@@ -41,20 +44,19 @@ class XMLLogger extends XLogger
     
     /**
      * Create instance of the logger
+     * @param string $level
      */
-    public function __construct(string $strFullpath, string $level = LogLevel::DEBUG)
+    public function __construct(string $level = LogLevel::DEBUG)
     {
-        $this->setLogLevel($level);
-        $this->setFullpath($strFullpath);
-        // init with remote user, if available
-        $this->strUser = isset($_SERVER["REMOTE_USER"]) ? $_SERVER["REMOTE_USER"] : '';
+        parent::__construct($level);
     }
 
     /**
      * Set XSL file to transform the log to HTML
      * @param string $strXSLFilen
+     * @return void
      */
-    public function setXSLFile(string $strXSLFilen) 
+    public function setXSLFile(string $strXSLFilen) : void
     {
         $this->strXSLFile = $strXSLFilen;
     }
@@ -64,6 +66,7 @@ class XMLLogger extends XLogger
      * @param string    $level
      * @param mixed     $message
      * @param mixed[]   $context
+     * @return void
      * @throws \Psr\Log\InvalidArgumentException
      */
     public function log($level, $message, array $context = array())
@@ -81,7 +84,7 @@ class XMLLogger extends XLogger
             
             $this->addChildToDoc('timestamp', date('Y-m-d H:i:s'), $xmlItem);
             // IP adress
-            if (($this->iOptions & self::LOG_IP) != 0 ) {
+            if (($this->iOptions & self::LOG_IP) != 0) {
                 $strIP = $_SERVER['REMOTE_ADDR'];
                 if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                     $strIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -89,11 +92,11 @@ class XMLLogger extends XLogger
                 $this->addChildToDoc('IP-adress', $strIP, $xmlItem);
             }
             // user
-            if (($this->iOptions & self::LOG_USER) != 0 ) {
+            if (($this->iOptions & self::LOG_USER) != 0) {
                 $this->addChildToDoc('user', $this->strUser, $xmlItem);
             }
             // backtrace - caller
-            if (($this->iOptions & self::LOG_BT) != 0 ) {
+            if (($this->iOptions & self::LOG_BT) != 0) {
                 $this->addChildToDoc('caller', $this->getCaller(), $xmlItem);
             }
             // the message
@@ -101,7 +104,7 @@ class XMLLogger extends XLogger
             $this->addChildToDoc('level', strtoupper($level), $xmlItem);
             $this->addChildToDoc('message', $strMessage, $xmlItem);
             // user agent
-            if (($this->iOptions & self::LOG_UA) != 0 ) {
+            if (($this->iOptions & self::LOG_UA) != 0) {
                 $this->addChildToDoc('useragent', $_SERVER["HTTP_USER_AGENT"], $xmlItem);
             }
             $this->xmlDoc->save($this->getFullpath());
@@ -109,11 +112,13 @@ class XMLLogger extends XLogger
     }
     
     /**
-     * Get the logfilehandle. If not opened so far, the file will be opened and
-     * dependend onm the file extensiopn the speparotor is set.
-     * @return resource
+     * Open the logfile. 
+     * If not opened so far, the file will be opened and
+     * root element to append new items is set.
+     * If file does not exist, it will be created.
+     * @return void
      */
-    protected function openLogfile() 
+    protected function openLogfile() : void
     {
         if (!$this->xmlDoc ||  !$this->xmlRoot) {
             $strFullPath = $this->getFullpath();
@@ -131,8 +136,9 @@ class XMLLogger extends XLogger
 
     /**
      * Create new logfile and insert base XML-structure.
+     * @return void
      */
-    protected function createLogfile() 
+    protected function createLogfile() : void
     {
         $this->xmlDoc = null;
         $this->xmlRoot = null;
@@ -140,7 +146,7 @@ class XMLLogger extends XLogger
         $this->xmlDoc = new \DOMDocument();
         $this->xmlDoc->preserveWhiteSpace = false;
         $this->xmlDoc->formatOutput = true;
-        if (strlen($this->strXSLFile) > 0 ) {
+        if (strlen($this->strXSLFile) > 0) {
             $xslt = $this->xmlDoc->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="' . $this->strXSLFile . '"');
             $this->xmlDoc->appendChild($xslt);
         }
@@ -150,8 +156,9 @@ class XMLLogger extends XLogger
 
     /**
      * Close the logfile
+     * @return void
      */
-    protected function closeLogfile()
+    protected function closeLogfile() : void
     {
         if ($this->xmlDoc) {
             $this->xmlDoc = null;
@@ -159,16 +166,6 @@ class XMLLogger extends XLogger
         if ($this->xmlRoot) {
             $this->xmlRoot = null;
         }
-    }
-
-    /**
-     * Get full path of the logfile.
-     * @return string
-     */
-    protected function getFullpath() : string 
-    {
-        $strFullPath = rtrim($this->strPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->strFilename;
-        return $strFullPath;
     }
     
     /**

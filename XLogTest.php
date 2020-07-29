@@ -36,20 +36,20 @@ switch ($strLogger) {
     case 'log':
     case 'csv':
     case 'txt':
-        $strLogfile = 'test_{date}.' . $strLogger;
-        $logger = new FileLogger($strLogfile, $level);
+        $logger = new FileLogger($level);
+        $logger->setFullpath('test_{date}.' . $strLogger);
         $logger->setOptions(XLogger::LOG_BT | XLogger::LOG_USER);
         $logger->setUser('SKien');
         $strMessage = 'Logger Output written to ' . $logger->getFilename() . $strMessage;
         break;
     case 'xml':
-        $strLogfile = 'test.xml';
-        $logger = new XMLLogger($strLogfile, $level);
+        $logger = new XMLLogger($level);
+        $logger->setFullpath('test_{month}.xml');
         $logger->setXSLFile('XMLLogger.xsl');
         $logger->setOptions(XLogger::LOG_BT | XLogger::LOG_USER | XLogger::LOG_UA);
         $logger->setUser('SKien');
         $strMessage = 'Logger Output written to ' . $logger->getFilename() . $strMessage;
-        $strLink = '<a target="_blank" href="' . $strLogfile . '">View Log</a>';
+        $strLink = '<a target="_blank" href="' . $logger->getFilename() . '">View Log</a>';
         break;
     case 'firefox':
         $logger = new FirePHPLogger($level);
