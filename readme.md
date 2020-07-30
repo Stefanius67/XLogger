@@ -8,12 +8,26 @@ This package provides **PSR-3** compliant Loggers for Output to
 - Plain Text (log, txt, csv)
 - XML File (can be transformed to HTML with included XSL)
 
-For logging to the browser console one of the following AddOns have to be installed:
-- FirePHP (available for Firefox and Chrome)
-- Chrome Logger (available for Chrome)
+For debugging in particular, it is often very time-saving if the logging output goes directly to the browser console.  
+Since the loggers comply with the PSR-3 specification, they can be used for existing code and there is the possibility to configure the most suitable logger for different scenarios and / or environments (development / test / delpoyment) at runtime.
 
+**For more information about the PSR-3 specification visit [www.php-fig.org](https://www.php-fig.org/psr/psr-3)**
+
+For logging to the browser console one of the following Add-Ons have to be installed (both are available for Firefox and Chrome):
+- FirePHP
+- Chrome Logger
+ 
 ## Installation   
 You can download the  Latest Version from PHPClasses.org. The namespaces, class- and filenames meet the **PSR-4** autoloader recommendations.
 
 ## Usage
 The use of the available logger classes and the integration of the PSR-3 interfaces / treats can be seen in the examples ***XLogTest.php*** and ***TestClass.php***.
+For XML-HTML Transformation of the XML-Format use Example XSL-Template ***XMLLogger.XSL***
+
+##### FirePHP Add-On
+Can be found on [www.firephp.org](http://www.firephp.org)
+##### Chrome Logger Add-On
+For Google Chrome can be found on
+[chrome.google.com](https://chrome.google.com/webstore/detail/chrome-logger/noaneddfkdjfnfdakjjmocngnfkfehhd)  
+
+For Firefox can be found on [addons.mozilla.org](https://addons.mozilla.org/de/firefox/addon/chromelogger/)
