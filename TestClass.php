@@ -25,6 +25,25 @@ class TestClass // implements LoggerAwareInterface
     
     public function doSomething()
     {
-        $this->logger->warning('inside of class');
+        $this->logger->info('Start {class}::doSomething()', ['class' => get_class($this)]);
+        for ($i = 1; $i < 10; $i++) {
+            // run a loop
+            $this->logger->debug('Run loop ({loop})', ['loop' => $i]);
+        }
+        $this->logger->info('{class}::doSomething() finished', ['class' => get_class($this)]);
+    }
+    
+    public function causeException()
+    {
+        try {
+            $this->throwException();
+        } catch (Exception $e) {
+            $this->logger->error('Catch Exception', ['exception' => $e]);
+        }
+    }
+    
+    protected function throwException()
+    {
+        throw new Exception('Caused any Exception');
     }
 }

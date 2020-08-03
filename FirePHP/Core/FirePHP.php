@@ -133,7 +133,7 @@ class FirePHP {
      *
      * @var string
      */
-    const Exception = 'EXCEPTION';
+    const EXCEPTION = 'EXCEPTION';
 
     /**
      * Displays an table in firebug console

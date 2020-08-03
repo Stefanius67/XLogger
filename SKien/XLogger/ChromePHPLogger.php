@@ -14,9 +14,10 @@ use Psr\Log\LogLevel;
  *
  * #### History
  * - *2020-07-15*   initial version
+ * - *2020-08-02*   output context key(s) as info only in case message does't include placeholder for
  *   
  * @package SKien\XLogger
- * @version 1.0.0
+ * @version 1.0.1
  * @author Stefanius <s.kien@online.de>
  * @copyright MIT License - see the LICENSE file for details
  */
@@ -48,31 +49,34 @@ class ChromePHPLogger extends XLogger
         if (!$this->logLevel($level)) {
             return;
         }
-        $message = 'PHP-' . strtoupper($level) . ': ' . $this->replaceContext($message, $context);
+        $strMessage = 'PHP-' . strtoupper($level) . ': ' . $this->replaceContext($message, $context);
         switch ($level) {
             case LogLevel::EMERGENCY:
             case LogLevel::ALERT:
             case LogLevel::CRITICAL:
             case LogLevel::ERROR:
-                ChromePhp::error($message);
+                ChromePhp::error($strMessage);
                 break;
             case LogLevel::WARNING:
-                ChromePhp::warn($message);
+                ChromePhp::warn($strMessage);
                 break;
             case LogLevel::NOTICE:
-                ChromePhp::log($message);
+                ChromePhp::log($strMessage);
                 break;
             case LogLevel::INFO:
-                ChromePhp::info($message);
+                ChromePhp::info($strMessage);
                 break;
             case LogLevel::DEBUG:
-                ChromePhp::log($message);
+                ChromePhp::log($strMessage);
                 break;
         }
         if (count($context) >0) {
             ChromePhp::group();
             foreach ($context as $key => $value) {
-                ChromePhp::info($key, $value);
+                // only add, if not included as placeholder in the mesage
+                if (strpos($message, '{' . $key . '}') === false) {
+                    ChromePhp::info($key, $value);
+                }
             }
             ChromePhp::groupEnd();
         }

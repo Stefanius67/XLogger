@@ -26,6 +26,7 @@ For XML-HTML Transformation of the XML-Format use Example XSL-Template ***XMLLog
 
 ##### FirePHP Add-On
 Can be found on [www.firephp.org](http://www.firephp.org)
+
 ##### Chrome Logger Add-On
 For Google Chrome can be found on
 [chrome.google.com](https://chrome.google.com/webstore/detail/chrome-logger/noaneddfkdjfnfdakjjmocngnfkfehhd)  

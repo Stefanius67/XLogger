@@ -15,9 +15,10 @@ use Psr\Log\LogLevel;
  *
  * #### History
  * - *2020-07-15*   initial version
+ * - *2020-08-02*   output context key(s) as info only in case message does't include placeholder for
  *
  * @package SKien\XLogger
- * @version 1.0.0
+ * @version 1.0.1
  * @author Stefanius <s.kien@online.de>
  * @copyright MIT License - see the LICENSE file for details
  */
@@ -58,31 +59,34 @@ class FirePHPLogger extends XLogger
         if (!$this->logLevel($level)) {
             return;
         }
-        $message = 'PHP-' . strtoupper($level) . ': ' . $this->replaceContext($message, $context);
+        $strMessage = 'PHP-' . strtoupper($level) . ': ' . $this->replaceContext($message, $context);
         switch ($level) {
             case LogLevel::EMERGENCY:
             case LogLevel::ALERT:
             case LogLevel::CRITICAL:
             case LogLevel::ERROR:
-                $this->fb->error($message);
+                $this->fb->error($strMessage);
                 break;
             case LogLevel::WARNING:
-                $this->fb->warn($message);
+                $this->fb->warn($strMessage);
                 break;
             case LogLevel::NOTICE:
-                $this->fb->log($message);
+                $this->fb->log($strMessage);
                 break;
             case LogLevel::INFO:
-                $this->fb->info($message);
+                $this->fb->info($strMessage);
                 break;
             case LogLevel::DEBUG:
-                $this->fb->log($message);
+                $this->fb->log($strMessage);
                 break;
         }
         if (count($context) >0) {
             // $this->fb->group('context');
             foreach ($context as $key => $value) {
-                $this->fb->log($value, $key);
+                // only add, if not included as placeholder in the mesage
+                if (strpos($message, '{' . $key . '}') === false) {
+                    $this->fb->log($value, $key);
+                }
             }
             // $this->fb->groupEnd();
         }

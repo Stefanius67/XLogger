@@ -61,30 +61,19 @@ switch ($strLogger) {
         break;
 }
 
-$logger->error('bad conditions :-(');
+$logger->error('bad conditions :-(', ['more' => 'just more Information']);
 $logger->info('some informations');
 $logger->alert('the bell is ringing...' . PHP_EOL . '... its 5 to 12!');
 $logger->warning('something gone wrong ;-)');
-for ($i = 1; $i <= 5; $i++) {
-    $logger->debug('debug message ({loop})', array('loop' => $i));
-}
 
 $oTest = new TestClass();
 
-try {
-    // just create PHP error...
-    $i = $oTest->invalidcall();
-} catch (Throwable $e) {
-    // any exception can directly be passed as message since it implements 
-    // the __toString() method.
-    // When an exception is set as part of the context array, the PSR-3 says 
-    // it MUST be in the 'exception' key to allow the implementor of the 
-    // logger to follow common pattern for exception logging.
-    $logger->error($e, array('exception' => $e));
-}
+// nothing will be logged since setLogger() was not called so far... but dont causes any error!');
+$oTest->doSomething();
 
 $oTest->setLogger($logger);
 $oTest->doSomething();
+$oTest->causeException();
 ?>
 <!DOCTYPE html>
 <html>
