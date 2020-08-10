@@ -1,0 +1,9 @@
+parameters:
+	level: 6
+	checkMissingIterableValueType: false
+	paths:
+		- SKien/XLogger
+	scanDirectories:
+		- CCampbell
+		- FirePHP
+		- Psr

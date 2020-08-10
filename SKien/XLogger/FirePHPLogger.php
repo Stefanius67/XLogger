@@ -52,7 +52,7 @@ class FirePHPLogger extends XLogger
      * @return void
      * @throws \Psr\Log\InvalidArgumentException
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = array()) : void
     {
         // check, if requested level should be logged
         // causes InvalidArgumentException in case of unknown level.
@@ -80,15 +80,13 @@ class FirePHPLogger extends XLogger
                 $this->fb->log($strMessage);
                 break;
         }
-        if (count($context) >0) {
-            // $this->fb->group('context');
+        if (count($context) > 0) {
             foreach ($context as $key => $value) {
                 // only add, if not included as placeholder in the mesage
                 if (strpos($message, '{' . $key . '}') === false) {
                     $this->fb->log($value, $key);
                 }
             }
-            // $this->fb->groupEnd();
         }
     }
 }

@@ -38,12 +38,12 @@ class TestClass // implements LoggerAwareInterface
         try {
             $this->throwException();
         } catch (Exception $e) {
-            $this->logger->error('Catch Exception', ['exception' => $e]);
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
         }
     }
     
     protected function throwException()
     {
-        throw new Exception('Caused any Exception');
+        throw new LogicException('Caused any Exception');
     }
 }

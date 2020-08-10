@@ -42,7 +42,7 @@ class ChromePHPLogger extends XLogger
      * @return void
      * @throws \Psr\Log\InvalidArgumentException
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = array()) : void
     {
         // check, if requested level should be logged
         // causes InvalidArgumentException in case of unknown level.
@@ -70,7 +70,7 @@ class ChromePHPLogger extends XLogger
                 ChromePhp::log($strMessage);
                 break;
         }
-        if (count($context) >0) {
+        if (count($context) > 0) {
             ChromePhp::group();
             foreach ($context as $key => $value) {
                 // only add, if not included as placeholder in the mesage

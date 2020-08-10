@@ -61,16 +61,38 @@
 <body style="font-family:Arial;font-size:8pt;background-color:#EEEEEE">
 <table width="100%"><tbody>
 <xsl:for-each select="log/item">
-    <tr class="{level}">
+	<xsl:variable name="rowclass"><xsl:value-of select="level"/></xsl:variable>
+    <tr class="{$rowclass}">
 		<td><xsl:value-of select="timestamp"/></td>
 		<td><xsl:value-of select="user"/></td>
 		<td class="caller"><xsl:value-of select="caller"/></td>
 		<td class="ua"><xsl:value-of select="useragent"/></td>
 	</tr>
     <tr class="{level}">
-		<td><xsl:value-of select="level"/></td>
+		<td><xsl:value-of select="$rowclass"/></td>
 		<td colspan="3"><xsl:value-of select="message"/></td>
     </tr>
+	<xsl:for-each select=".//context">
+		<tr class="{$rowclass}">
+			<td></td>
+			<td><xsl:value-of select="key"/></td>
+			<td colspan="2"><xsl:value-of select="value"/></td>
+		</tr>
+	</xsl:for-each>
+	<xsl:if test="exception">
+		<tr class="{$rowclass}">
+			<td></td>
+			<td colspan="3"><xsl:value-of select="exception/class"/> trace:</td>
+		</tr>
+	</xsl:if>
+	<xsl:for-each select=".//exception/trace">
+		<tr class="{$rowclass}">
+			<td></td>
+			<td><xsl:value-of select="class"/></td>
+			<td><xsl:value-of select="function"/></td>
+			<td><xsl:value-of select="file"/> (<xsl:value-of select="line"/>)</td>
+		</tr>
+	</xsl:for-each>
 </xsl:for-each>
 </tbody></table>
 </body>

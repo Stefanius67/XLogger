@@ -29,7 +29,7 @@ use Psr\Log\LogLevel;
  */
 class FileLogger extends XLogger
 {
-    /** @var resource file handle of the opened logfile     */
+    /** @var resource|bool file handle of the opened logfile     */
     protected $logfile = false;
     /** @var string separator     */
     protected string $strSep = '';
@@ -62,14 +62,14 @@ class FileLogger extends XLogger
      * @return void
      * @throws \Psr\Log\InvalidArgumentException
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = array()) : void
     {
         // check, if requested level should be logged
         // causes InvalidArgumentException in case of unknown level.
         if ($this->logLevel($level)) {
             // Open file if not opened so far, dependend on the file extension the separator is set.
             $this->openLogfile();
-            if (!$this->logfile) {
+            if ($this->logfile === false) {
                 return;
             }
             
@@ -114,7 +114,7 @@ class FileLogger extends XLogger
      */
     protected function openLogfile() : void
     {
-        if (!$this->logfile) {
+        if ($this->logfile === false) {
             $strFullPath = $this->getFullpath();
             switch (strtolower(pathinfo($strFullPath, PATHINFO_EXTENSION))) {
                 case 'csv':

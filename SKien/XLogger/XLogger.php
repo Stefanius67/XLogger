@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace SKien\XLogger;
 
 use Psr\Log\AbstractLogger;
@@ -59,9 +61,9 @@ abstract class XLogger extends AbstractLogger
      * @param string $strLogLevel
      * @return void
      */
-    public function setLogLevel(string $level) : void
+    public function setLogLevel(string $strLogLevel) : void
     {
-        $this->iLogLevel = $this->getIntLevel($level);
+        $this->iLogLevel = $this->getIntLevel($strLogLevel);
     }
     
     /**
