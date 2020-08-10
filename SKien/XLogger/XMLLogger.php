@@ -117,8 +117,8 @@ class XMLLogger extends XLogger
                         $aTrace = $value->getTrace();
                         foreach ($aTrace as $aTraceItem) {
                             $xmlTrace = $this->addChildToDoc('trace', '', $xmlEx);
-                            foreach ($aTraceItem as $key => $value) {
-                                $this->addChildToDoc($key, (string)$value, $xmlTrace);
+                            foreach ($aTraceItem as $tkey => $tvalue) {
+                                $this->addChildToDoc($tkey, (string)$tvalue, $xmlTrace);
                             }
                         }
                     } else if (strpos($message, '{' . $key . '}') === false) {
@@ -142,7 +142,7 @@ class XMLLogger extends XLogger
      */
     protected function openLogfile() : void
     {
-        if (!$this->xmlDoc ||  !$this->xmlRoot) {
+        if (!$this->xmlDoc || !$this->xmlRoot) {
             $strFullPath = $this->getFullpath();
             if (!file_exists($strFullPath)) {
                 $this->createLogfile();
@@ -197,7 +197,7 @@ class XMLLogger extends XLogger
      * @param \DOMElement $oParent
      * @return \DOMElement
      */
-    public function addChildToDoc(string $strName, string $strValue='', \DOMElement $oParent=null) : ?\DOMElement
+    public function addChildToDoc(string $strName, string $strValue = '', \DOMElement $oParent = null) : ?\DOMElement
     {
         $oChild = null;
         if ($this->xmlDoc) {

@@ -69,14 +69,14 @@ class FileLogger extends XLogger
         if ($this->logLevel($level)) {
             // Open file if not opened so far, dependend on the file extension the separator is set.
             $this->openLogfile();
-            if ($this->logfile === false) {
+            if (!is_resource($this->logfile)) {
                 return;
             }
             
             // timestamp
-            $strLine  = date('Y-m-d H:i:s');
+            $strLine = date('Y-m-d H:i:s');
             // IP adress
-            if (($this->iOptions & self::LOG_IP) != 0 ) {
+            if (($this->iOptions & self::LOG_IP) != 0) {
                 $strIP = $_SERVER['REMOTE_ADDR'];
                 if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                     $strIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -84,11 +84,11 @@ class FileLogger extends XLogger
                 $strLine .= $this->strSep . $strIP;
             }
             // user
-            if (($this->iOptions & self::LOG_USER) != 0 ) {
+            if (($this->iOptions & self::LOG_USER) != 0) {
                 $strLine .= $this->strSep . $this->prepareText($this->strUser);
             }
             // backtrace - caller
-            if (($this->iOptions & self::LOG_BT) != 0 ) {
+            if (($this->iOptions & self::LOG_BT) != 0) {
                 $strLine .= $this->strSep . $this->getCaller();
             }
             // the message
@@ -120,12 +120,12 @@ class FileLogger extends XLogger
                 case 'csv':
                 case 'txt':
                     $this->strSep = ";";
-                    $this->strReplace =",";
+                    $this->strReplace = ",";
                     break;
                 case 'log':
                 default:
                     $this->strSep = "\t";
-                    $this->strReplace =" ";
+                    $this->strReplace = " ";
                     break;
             }
             $this->logfile = fopen($strFullPath, 'a');
@@ -138,7 +138,7 @@ class FileLogger extends XLogger
      */
     protected function closeLogfile() : void
     {
-        if ($this->logfile) {
+        if (is_resource($this->logfile)) {
             fclose($this->logfile);
             $this->logfile = false;
         }

@@ -206,7 +206,7 @@ abstract class XLogger extends AbstractLogger
         if ($aCaller) {
             // the base path on server isn't from interest.. 
             $strFile = str_replace($_SERVER['DOCUMENT_ROOT'], '', $aCaller['file']);
-            $strCaller = $strFile . ' ('.$aCaller['line'].')';
+            $strCaller = $strFile . ' (' . $aCaller['line'] . ')';
         }
         return $strCaller;
     }
