@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace SKien\XLogger;
 
@@ -37,8 +37,8 @@ class XMLLogger extends XLogger
 {
     /** @var  \DOMDocument dom document for logging    */
     protected ?\DOMDocument  $xmlDoc = null;
-    /** @var  \DOMNode root element of the dom document    */
-    protected ?\DOMNode  $xmlRoot = null;
+    /** @var  \DOMElement root element of the dom document    */
+    protected ?\DOMElement  $xmlRoot = null;
     /** @var string fullpath to XSL file for HTML transformation of the XML log     */
     protected string $strXSLFile = '';
     
@@ -69,7 +69,7 @@ class XMLLogger extends XLogger
      * @return void
      * @throws \Psr\Log\InvalidArgumentException
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = array()) : void
     {
         // check, if requested level should be logged
         // causes InvalidArgumentException in case of unknown level.
@@ -107,6 +107,28 @@ class XMLLogger extends XLogger
             if (($this->iOptions & self::LOG_UA) != 0) {
                 $this->addChildToDoc('useragent', $_SERVER["HTTP_USER_AGENT"], $xmlItem);
             }
+            
+            if (count($context) > 0) {
+                foreach ($context as $key => $value) {
+                    if ($key == 'exception') {
+                        $xmlEx = $this->addChildToDoc('exception', '', $xmlItem);
+                        $this->addChildToDoc('msg', (string)$value, $xmlEx);
+                        $this->addChildToDoc('class', get_class($value), $xmlEx);
+                        $aTrace = $value->getTrace();
+                        foreach ($aTrace as $aTraceItem) {
+                            $xmlTrace = $this->addChildToDoc('trace', '', $xmlEx);
+                            foreach ($aTraceItem as $key => $value) {
+                                $this->addChildToDoc($key, (string)$value, $xmlTrace);
+                            }
+                        }
+                    } else if (strpos($message, '{' . $key . '}') === false) {
+                        $xmlContext = $this->addChildToDoc('context', '', $xmlItem);
+                        $this->addChildToDoc('key', (string)$key, $xmlContext);
+                        $this->addChildToDoc('value', (string)$value, $xmlContext);
+                    }
+                }
+            }
+            
             $this->xmlDoc->save($this->getFullpath());
         }
     }
@@ -169,13 +191,13 @@ class XMLLogger extends XLogger
     }
     
     /**
-     * create new DOMElement and append it to given parent
+     * create new DOMNode and append it to given parent
      * @param string $strName
      * @param string $strValue
      * @param \DOMElement $oParent
      * @return \DOMElement
      */
-    public function addChildToDoc(string $strName, string $strValue='', \DOMElement $oParent=null) : ?\DOMElement 
+    public function addChildToDoc(string $strName, string $strValue='', \DOMElement $oParent=null) : ?\DOMElement
     {
         $oChild = null;
         if ($this->xmlDoc) {
