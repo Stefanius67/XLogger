@@ -95,7 +95,7 @@ class FileLogger extends XLogger
             $strMessage = $this->replaceContext($message, $context);
             $strLine .= $this->strSep . $this->prepareText(strtoupper($level) . ': ' . $strMessage);
             // user agent
-            if (($this->iOptions & self::LOG_BT) != 0 ) {
+            if (($this->iOptions & self::LOG_BT) != 0) {
                 $strLine .= $this->strSep . $this->prepareText($_SERVER["HTTP_USER_AGENT"]);
             }
             
