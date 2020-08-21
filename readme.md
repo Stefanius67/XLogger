@@ -1,4 +1,4 @@
-﻿# XLogger - PSR3 compliant Logging to Browser Console, Text- or XML-File
+# XLogger - PSR3 compliant Logging to Browser Console, Text- or XML-File
 
  ![Latest Stable Version](https://img.shields.io/badge/release-v1.0.0-brightgreen.svg)
  ![License](https://img.shields.io/packagist/l/gomoob/php-pushwoosh.svg)
