@@ -4,13 +4,13 @@ declare(strict_types=1);
 require_once 'autoloader.php';
 require_once 'TestClass.php';
 
-use SKien\XLogger\XLogger;
-use SKien\XLogger\FileLogger;
-use SKien\XLogger\FirePHPLogger;
-use SKien\XLogger\ChromePHPLogger;
-use SKien\XLogger\XMLLogger;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
+use SKien\XLogger\ChromePHPLogger;
+use SKien\XLogger\FileLogger;
+use SKien\XLogger\FirePHPLogger;
+use SKien\XLogger\XLogger;
+use SKien\XLogger\XMLLogger;
 
 $strMessage = '';
 $strLink = '';
@@ -37,9 +37,9 @@ switch ($strLogger) {
     case 'csv':
     case 'txt':
         $logger = new FileLogger($level);
-        $logger->setFullpath('test_{date}.' . $strLogger);
+        $logger->setUser('S./Kien');
+        $logger->setFullpath('test_{date}_{name}.' . $strLogger);
         $logger->setOptions(XLogger::LOG_BT | XLogger::LOG_USER);
-        $logger->setUser('SKien');
         $strMessage = 'Logger Output written to ' . $logger->getFilename() . $strMessage;
         break;
     case 'xml':

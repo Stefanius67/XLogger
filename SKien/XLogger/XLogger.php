@@ -103,12 +103,16 @@ abstract class XLogger extends AbstractLogger
      * possible to use placeholders in the file name or path, which are replaced accordingly
      * before the file is created.
      * Following placeholders are supported:  <br/><ul>
-     * <li>` {date} ` : will be replaced by current date (Format 'YYYY-MM-DD') </li>
-     * <li>` {month}` : will be replaced by current month (Format 'YYYY-MM') </li>
-     * <li>` {year} ` : will be replaced by current year (Format 'YYYY') </li>
-     * <li>` {week} ` : will be replaced by current ISO-8601 week (Format 'YYYY_WW') </li>
-     * <li>` {name} ` : will be replaced by username (must be set before!) </li></ul>
+     * <li> {date}   : will be replaced by current date (Format 'YYYY-MM-DD') </li>
+     * <li> {month} : will be replaced by current month (Format 'YYYY-MM') </li>
+     * <li> {year}   : will be replaced by current year (Format 'YYYY') </li>
+     * <li> {week}   : will be replaced by current ISO-8601 week (Format 'YYYY_WW') </li>
+     * <li> {name}   : will be replaced by the username </li></ul>
      *
+     * > Note: <br/>
+     * > If you use the placeholder for the user name, this have to be set BEFORE the call of
+     *   this method. In the username, all characters except A-Z, a-z, 0-9, '_' and '-' are
+     *   filtered out (to always get a valid file name)!
      * @param string $strFullpath
      * @return void
      */
@@ -270,6 +274,9 @@ abstract class XLogger extends AbstractLogger
         $strPath = str_replace('{month}', date('Y-m'), $strPath);
         $strPath = str_replace('{year}', date('Y'), $strPath);
         $strPath = str_replace('{week}', date('Y_W'), $strPath);
+
+        $strUser = preg_replace("/[^A-Za-z0-9_-]/",'', $this->strUser);
+        $strPath = str_replace('{name}', $strUser, $strPath);
 
         return $strPath;
     }
