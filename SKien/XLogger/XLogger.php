@@ -121,8 +121,9 @@ abstract class XLogger extends AbstractLogger
         $this->closeLogfile();
         if (strlen($strFullpath) > 0) {
             $strFullpath = $this->replacePathPlaceholder($strFullpath);
-            $this->strPath = pathinfo($strFullpath, PATHINFO_DIRNAME);
-            $this->strFilename = pathinfo($strFullpath, PATHINFO_BASENAME);
+            // scrutinizer didn't realize, that pathinfo returns allways string, if $options set!
+            $this->strPath = /** @scrutinizer ignore-type */ pathinfo($strFullpath, PATHINFO_DIRNAME);
+            $this->strFilename = /** @scrutinizer ignore-type */ pathinfo($strFullpath, PATHINFO_BASENAME);
         }
     }
 
@@ -275,7 +276,7 @@ abstract class XLogger extends AbstractLogger
         $strPath = str_replace('{year}', date('Y'), $strPath);
         $strPath = str_replace('{week}', date('Y_W'), $strPath);
 
-        $strUser = preg_replace("/[^A-Za-z0-9_-]/",'', $this->strUser);
+        $strUser = preg_replace("/[^A-Za-z0-9_-]/", '', $this->strUser);
         $strPath = str_replace('{name}', $strUser, $strPath);
 
         return $strPath;

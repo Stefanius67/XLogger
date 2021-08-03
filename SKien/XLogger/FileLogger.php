@@ -128,7 +128,9 @@ class FileLogger extends XLogger
     {
         if ($this->logfile === false) {
             $strFullPath = $this->getFullpath();
-            switch (strtolower(pathinfo($strFullPath, PATHINFO_EXTENSION))) {
+            // scrutinizer didn't realize, that pathinfo returns allways string, if $options set!
+            $strExt = strtolower(/** @scrutinizer ignore-type */ pathinfo($strFullPath, PATHINFO_EXTENSION));
+            switch ($strExt) {
                 case 'csv':
                 case 'txt':
                     $this->strSep = ";";
