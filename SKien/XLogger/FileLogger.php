@@ -7,24 +7,20 @@ use Psr\Log\LogLevel;
 
 /**
  * PSR-3 compliant logger for Output to plain text file (.log, .csv, .txt)
- * 
+ *
  * Each log item is represented by one single line containing the fields
  * separated by defined character.
- * 
+ *
  * Dependent on the file extension following field separator is used:
  * - `.log` :   TAB
  * - `.csv` :   semicolon (;)
  * - `.txt` :   colon (,)
- * 
+ *
  * CR/LF in message are replaced with Space to keep one item in a single line.
  * Field separator is replaced to keep the number of fields consistent.
  *
- * #### History
- * - *2020-07-15*   initial version
- *
- * @package SKien\XLogger
- * @version 1.0.0
- * @author Stefanius <s.kien@online.de>
+ * @package XLogger
+ * @author Stefanius <s.kientzler@online.de>
  * @copyright MIT License - see the LICENSE file for details
  */
 class FileLogger extends XLogger
@@ -35,25 +31,28 @@ class FileLogger extends XLogger
     protected string $strSep = '';
     /** @var string replacement for separator inside of message      */
     protected string $strReplace = '';
-    
+    /** @var bool $bReset reset file when open     */
+    protected bool $bReset = false;
+
     /**
-     * init filename, logging level and remote username (if set)
-     * @param string $level
+     * Init logging level and remote username (if set).
+     * @see XLogger::setLogLevel()
+     * @param string $level the min. `LogLevel` to be logged
      */
     public function __construct(string $level = LogLevel::DEBUG)
     {
         parent::__construct($level);
     }
-    
+
     /**
      * close file if already opened.
      */
     public function __destruct()
     {
-        // textbased file kept open... 
+        // textbased file kept open...
         $this->closeLogfile();
     }
-    
+
     /**
      * Logs with an arbitrary level.
      * @param string    $level
@@ -72,7 +71,7 @@ class FileLogger extends XLogger
             if (!is_resource($this->logfile)) {
                 return;
             }
-            
+
             // timestamp
             $strLine = date('Y-m-d H:i:s');
             // IP adress
@@ -98,7 +97,7 @@ class FileLogger extends XLogger
             if (($this->iOptions & self::LOG_BT) != 0) {
                 $strLine .= $this->strSep . $this->prepareText($_SERVER["HTTP_USER_AGENT"]);
             }
-            
+
             // and write to the file
             flock($this->logfile, LOCK_EX);
             fwrite($this->logfile, $strLine . PHP_EOL);
@@ -106,7 +105,20 @@ class FileLogger extends XLogger
             flock($this->logfile, LOCK_UN);
         }
     }
-    
+
+    /**
+     * close file if open, reopen and truncate existing file
+     */
+    public function reset() : void
+    {
+        if (is_resource($this->logfile)) {
+            fclose($this->logfile);
+            $this->logfile = fopen($this->getFullpath(), 'w');
+        } else {
+            $this->bReset = true;
+        }
+    }
+
     /**
      * Open the logfile if not done so far.
      * Dependend on the file extension the speparator is set.
@@ -128,10 +140,11 @@ class FileLogger extends XLogger
                     $this->strReplace = " ";
                     break;
             }
-            $this->logfile = fopen($strFullPath, 'a');
+            $this->logfile = fopen($strFullPath, $this->bReset ? 'w' : 'a');
+            $this->bReset = false;
         }
     }
-    
+
     /**
      * close file if already opened.
      * @return void
@@ -143,8 +156,8 @@ class FileLogger extends XLogger
             $this->logfile = false;
         }
     }
-    
-    
+
+
     /**
      * @param string $strMessage
      * @return string

@@ -8,29 +8,26 @@ use Psr\Log\LogLevel;
 /**
  * PSR-3 compliant logger for Output to XML file.
  *
- * This class creates XML file that can be transformed with given xsl into HTML
+ * This class creates a XML file that can be transformed with given xsl into HTML
+ *
  * #### Structure of the XML-File
  * ```xml
- *      <log>
- *          <item>
- *              <timestamp>2020-07-21 18:22:58</timestamp>
- *              <user>SKien</user>
- *              <caller>/packages/XLogger/XLogTest.php (62)</caller>
- *              <level>ERROR</level>
- *              <message>bad conditions :-(</message>
- *          </item>
- *          <item>
- *              ...
- *          </item>
- *      </log>
+ *  <log>
+ *      <item>
+ *          <timestamp>2020-07-21 18:22:58</timestamp>
+ *          <user>SKien</user>
+ *          <caller>/packages/XLogger/XLogTest.php (62)</caller>
+ *          <level>ERROR</level>
+ *          <message>bad conditions :-(</message>
+ *      </item>
+ *      <item>
+ *          ...
+ *      </item>
+ *  </log>
  * ```
  *
- * #### History
- * - *2020-07-15*   initial version
- *
- * @package SKien\XLogger
- * @version 1.0.0
- * @author Stefanius <s.kien@online.de>
+ * @package XLogger
+ * @author Stefanius <s.kientzler@online.de>
  * @copyright MIT License - see the LICENSE file for details
  */
 class XMLLogger extends XLogger
@@ -41,10 +38,11 @@ class XMLLogger extends XLogger
     protected ?\DOMElement  $xmlRoot = null;
     /** @var string fullpath to XSL file for HTML transformation of the XML log     */
     protected string $strXSLFile = '';
-    
+
     /**
-     * Create instance of the logger
-     * @param string $level
+     * Init logging level and remote username (if set).
+     * @see XLogger::setLogLevel()
+     * @param string $level the min. `LogLevel` to be logged
      */
     public function __construct(string $level = LogLevel::DEBUG)
     {
@@ -52,7 +50,11 @@ class XMLLogger extends XLogger
     }
 
     /**
-     * Set XSL file to transform the log to HTML
+     * Set XSL file to transform the log to HTML.
+     * The specified XSL must be: <ul>
+     * <li> located in the same directory as the log file </li>
+     * <li> contain relative path to the log file </li>
+     * <li> contain absolute path </li></ul>
      * @param string $strXSLFilen
      * @return void
      */
@@ -60,7 +62,7 @@ class XMLLogger extends XLogger
     {
         $this->strXSLFile = $strXSLFilen;
     }
-    
+
     /**
      * Logs with an arbitrary level.
      * @param string    $level
@@ -79,9 +81,9 @@ class XMLLogger extends XLogger
             if (!$this->xmlDoc || !$this->xmlRoot) {
                 return;
             }
-            
+
             $xmlItem = $this->addChildToDoc('item', '', $this->xmlRoot);
-            
+
             $this->addChildToDoc('timestamp', date('Y-m-d H:i:s'), $xmlItem);
             // IP adress
             if (($this->iOptions & self::LOG_IP) != 0) {
@@ -107,7 +109,7 @@ class XMLLogger extends XLogger
             if (($this->iOptions & self::LOG_UA) != 0) {
                 $this->addChildToDoc('useragent', $_SERVER["HTTP_USER_AGENT"], $xmlItem);
             }
-            
+
             if (count($context) > 0) {
                 foreach ($context as $key => $value) {
                     if ($key == 'exception') {
@@ -128,13 +130,21 @@ class XMLLogger extends XLogger
                     }
                 }
             }
-            
+
             $this->xmlDoc->save($this->getFullpath());
         }
     }
-    
+
     /**
-     * Open the logfile. 
+     * we just create new XML document
+     */
+    public function reset() : void
+    {
+        $this->createLogfile();
+    }
+
+    /**
+     * Open the logfile.
      * If not opened so far, the file will be opened and
      * root element to append new items is set.
      * If file does not exist, it will be created.
@@ -152,6 +162,7 @@ class XMLLogger extends XLogger
                 $this->xmlDoc->formatOutput = true;
                 $this->xmlDoc->load($strFullPath);
                 $this->xmlRoot = $this->xmlDoc->documentElement;
+                // TODO: check, if XSL set and insert if PI do not exist so far
             }
         }
     }
@@ -189,7 +200,7 @@ class XMLLogger extends XLogger
             $this->xmlRoot = null;
         }
     }
-    
+
     /**
      * create new DOMNode and append it to given parent
      * @param string $strName

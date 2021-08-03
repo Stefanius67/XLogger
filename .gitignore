@@ -1,6 +1,7 @@
 /.settings/
 /.buildpath
 /.project
+/wiki/
 /test*.log
 /test*.csv
 /test*.txt

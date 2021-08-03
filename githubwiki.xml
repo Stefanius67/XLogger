@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<githubwiki>
+    <title>XLogger</title>
+	<options>
+		<verbose>true</verbose>
+		<debug>false</debug>
+		<norun>false</norun>
+	</options>
+	
+	<phpdoc>
+		<command>phpdoc30</command>
+	</phpdoc>
+	
+    <paths>
+        <output>./wiki/XLogger.wiki</output>
+        <cache>./wiki/cache</cache>
+        <project>./</project>
+    </paths>
+	
+	<source>
+		<path>SKien/XLogger</path>
+		<path>Psr/Log/LoggerInterface.php</path>
+		<path>Psr/Log/AbstractLogger.php</path>
+		<path>Psr/Log/NullLogger.php</path>
+		<path>Psr/Log/LogLevel.php</path>
+	</source>
+
+	<visibilities>
+		<visibility>public</visibility>
+	</visibilities>            
+	
+	<ignore-tags>
+		<ignore-tag>author</ignore-tag>
+		<ignore-tag>version</ignore-tag>
+		<ignore-tag>copyright</ignore-tag>
+		<ignore-tag>codeCoverageIgnore</ignore-tag>
+	</ignore-tags>
+</githubwiki>

@@ -9,31 +9,28 @@ use Psr\Log\LogLevel;
 /**
  * PSR-3 compliant logger for Output to the console of the Chrome browser.
  *
- * This class does not use all of Chrome Logger capabilities, but can be used 
- * very flexibly due to the PSR-3 compatibility components into the browser console.
+ * This class does not use all of Chrome Logger capabilities, but can be used
+ * very flexible due to the PSR-3 compatibility components into the browser console.
  *
- * #### History
- * - *2020-07-15*   initial version
- * - *2020-08-02*   output context key(s) as info only in case message does't include placeholder for
- *   
- * @package SKien\XLogger
- * @version 1.0.1
- * @author Stefanius <s.kien@online.de>
+ * @package XLogger
+ * @author Stefanius <s.kientzler@online.de>
  * @copyright MIT License - see the LICENSE file for details
  */
 class ChromePHPLogger extends XLogger
 {
     /**
-     * Set backtrace level to 'ignore' last calls inside logger class when
-     * displaying filename/line of the log call. 
-     * @param string $level
+     * Init logging level and remote username (if set).
+     * @see XLogger::setLogLevel()
+     * @param string $level the min. `LogLevel` to be logged
      */
     public function __construct(string $level = LogLevel::DEBUG)
     {
         parent::__construct($level);
+        // We have to set the backtrace level to 'ignore' last calls inside logger class when
+        // displaying filename/line of the log call.
         ChromePhp::getInstance()->addSetting(ChromePhp::BACKTRACE_LEVEL, 3);
     }
-    
+
     /**
      * Logs with an arbitrary level.
      * @param mixed   $level
