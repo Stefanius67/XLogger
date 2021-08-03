@@ -121,7 +121,7 @@ abstract class XLogger extends AbstractLogger
         $this->closeLogfile();
         if (strlen($strFullpath) > 0) {
             $strFullpath = $this->replacePathPlaceholder($strFullpath);
-            // scrutinizer didn't realize, that pathinfo returns allways string, if $options set!
+            // scrutinizer didn't (or can't...) analyse, that pathinfo returns allways string if the $options param is set!
             /** @scrutinizer ignore-type */ $this->strPath = pathinfo($strFullpath, PATHINFO_DIRNAME);
             /** @scrutinizer ignore-type */ $this->strFilename = pathinfo($strFullpath, PATHINFO_BASENAME);
         }
