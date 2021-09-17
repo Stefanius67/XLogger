@@ -195,10 +195,10 @@ abstract class XLogger extends AbstractLogger
     /**
      * Replace placeholders with the coresponding values.
      * @param mixed $message    string or object implements __toString() method
-     * @param array $context
+     * @param array<string,mixed> $context
      * @return string
      */
-    protected function replaceContext($message, array $context = array()) : string
+    protected function replaceContext($message, array $context = []) : string
     {
         // build a replacement array with braces around the context keys
         $replace = array();
@@ -276,7 +276,7 @@ abstract class XLogger extends AbstractLogger
         $strPath = str_replace('{year}', date('Y'), $strPath);
         $strPath = str_replace('{week}', date('Y_W'), $strPath);
 
-        $strUser = preg_replace("/[^A-Za-z0-9_-]/", '', $this->strUser);
+        $strUser = preg_replace("/[^A-Za-z0-9_-]/", '', $this->strUser) ?? '';
         $strPath = str_replace('{name}', $strUser, $strPath);
 
         return $strPath;

@@ -1,6 +1,5 @@
 parameters:
-	level: 6
-	checkMissingIterableValueType: false
+	level: max
 	paths:
 		- SKien/XLogger
 	scanDirectories:
