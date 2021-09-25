@@ -1,10 +1,11 @@
 # XLogger - PSR3 compliant Logging to Browser Console, Text- or XML-File
 
- ![Latest Stable Version](https://img.shields.io/badge/release-v1.0.0-brightgreen.svg)
+ ![Latest Stable Version](https://img.shields.io/badge/release-v1.0.1-brightgreen.svg)
  ![License](https://img.shields.io/packagist/l/gomoob/php-pushwoosh.svg)
  [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg)](https://php.net/)
  [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat)](https://phpstan.org/)
  [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Stefanius67/XLogger/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Stefanius67/XLogger/?branch=master)
+ 
 ----------
 This package provides **PSR-3** compliant Loggers for Output to
 - Browser Console via FirePHP
